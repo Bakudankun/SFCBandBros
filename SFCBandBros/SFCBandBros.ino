@@ -9,36 +9,37 @@ void setup(){ // 起動時に一度だけ呼ばれる初期化関数
 }
 
 void loop(){ // 起動後ループしつづける関数
-	int input = pad.buttons();
+	int input = 0;
+	for(int i = 0; i < 20; i++) input |= pad.buttons();
 	if(input & SNES_A){
 		Serial.print("A ");
 		noteOn(83);
 	}
-	if(input & SNES_B){
+	else if(input & SNES_B){
 		Serial.print("B ");
 		noteOn(81);
 	}
-	if(input & SNES_X){
+	else if(input & SNES_X){
 		Serial.print("X ");
 		noteOn(84);
 	}
-	if(input & SNES_Y){
+	else if(input & SNES_Y){
 		Serial.print("Y ");
 		noteOn(79);
 	}
-	if(input & SNES_UP){
+	else if(input & SNES_UP){
 		Serial.print("u ");
 		noteOn(76);
 	}
-	if(input & SNES_DOWN){
+	else if(input & SNES_DOWN){
 		Serial.print("d ");
 		noteOn(72);
 	}
-	if(input & SNES_LEFT){
+	else if(input & SNES_LEFT){
 		Serial.print("l ");
 		noteOn(74);
 	}
-	if(input & SNES_RIGHT){
+	else if(input & SNES_RIGHT){
 		Serial.print("r ");
 		noteOn(77);
 	}
