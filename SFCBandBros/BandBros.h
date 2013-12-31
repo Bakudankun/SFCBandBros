@@ -4,6 +4,9 @@
  * また、特殊コマンドの入力でステータスを変更する。
  */
 
+#ifndef _BANDBROS_H_
+#define _BANDBROS_H_
+
 #include "Arduino.h"
 #include <SNESpad.h>
 #include "Buzzer.h"
@@ -30,8 +33,6 @@ class BandBros{
 		void noteOn(char key); // keyの音を鳴らす。
 		
 		void noteOff(); // 鳴っている音を止める。
-
-		void addKey(char)
 		
 		char key; // キー。デフォルト72。
 		char offset; // どのボタンでキーの音が鳴るか。0で十字ボタン下。1で十字ボタン左。-1では十字ボタン下でレの音が鳴る。
@@ -42,3 +43,5 @@ class BandBros{
 		Buzzer *buzzer; // ブザー出力。ブザーが無い時はnull。
 		
 };
+
+#endif

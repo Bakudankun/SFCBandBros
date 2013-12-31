@@ -2,6 +2,9 @@
  * Buzzerクラス。MIDIっぽい命令でブザーを鳴らす。
  */
 
+#ifndef _BUZZER_H_
+#define _BUZZER_H_
+
 #include "Arduino.h"
 
 class Buzzer{
@@ -25,4 +28,6 @@ class Buzzer{
 		
 		byte pin; // ブザー出力のピン番号
 
-}
+};
+
+#endif
