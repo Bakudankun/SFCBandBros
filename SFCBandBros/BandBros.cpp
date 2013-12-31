@@ -1,6 +1,6 @@
 #include "BandBros.h"
 
-#define LRCOUNTER 100
+#define LRCOUNTER 15
 
 BandBros::BandBros(byte buzzPin){
 	if(buzzPin >= 0 && buzzPin <= 13) buzzer = new Buzzer(buzzPin);
@@ -14,13 +14,22 @@ BandBros::BandBros(byte buzzPin){
 
 void BandBros::reset(){
 	noteOff();
-	BandBros(buzzPin);
+	key = 72;
+	offset = 0;
+	playing = -1;
+	playButton = 0;
+	prevButtons = 0;
+	noteCounter = 0;
 	return;
 }
 
 void BandBros::decode(int buttons){
 	int ctrl = 0;
 
+	if(buttons == (SNES_L | SNES_R | SNES_START | SNES_SELECT)){
+		reset();
+		return;
+	}
 	if(noteCounter) noteCounter--;
 	if(buttons == prevButtons) return;
 	if(!(playButton & buttons)){
@@ -30,10 +39,10 @@ void BandBros::decode(int buttons){
 	}
 	if(buttons & SNES_START){
 		ctrl = buttons & ~prevButtons;
-		if(ctrl & SNES_LEFT) key--;
-		if(ctrl & SNES_RIGHT) key++;
-		if(ctrl & SNES_UP) key+=12;
-		if(ctrl & SNES_DOWN) key-=12;
+		if(ctrl & SNES_LEFT) addKey(-1);
+		if(ctrl & SNES_RIGHT) addKey(1);
+		if(ctrl & SNES_UP) addKey(12);
+		if(ctrl & SNES_DOWN) addKey(-12);
 		if(ctrl & SNES_L) offset--;
 		if(ctrl & SNES_R) offset++;
 		key = constrain(key, 0, 127);
@@ -46,8 +55,8 @@ void BandBros::decode(int buttons){
 				break;
 			}
 		}
-	} else if((noteCounter > 0) && (ctrl = ((buttons & ~prevButtons) & (SNES_L | SNES_R)))){
-		noteOn(playing + ((ctrl & SNES_L)?1:0) + ((ctrl & SNES_R)?12:0));
+	} else if((noteCounter > 0) && ((buttons ^ ~prevButtons) & (SNES_L | SNES_R))){
+		noteOn(playing + ((buttons & SNES_L) - (prevButtons & SNES_L))/SNES_L + ((buttons & SNES_R) - (prevButtons & SNES_R))*12/SNES_R);
 		noteCounter = LRCOUNTER;
 	}
 
@@ -87,7 +96,7 @@ char BandBros::btok(int button){
 			return -1;
 			break;
 	}
-	nbutton += offset;
+	nbutton -= offset;
 
 	int val = key; // 返すノート番号
 	if(nbutton >= 0){
@@ -164,3 +173,8 @@ void BandBros::noteOff(){
 	return;
 }
 
+void BandBros::addKey(int val){
+	val = val + key;
+	if(val >= 0 && val <= 127) key = val;
+	return;
+}

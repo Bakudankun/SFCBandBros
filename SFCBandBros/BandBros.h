@@ -33,6 +33,8 @@ class BandBros{
 		void noteOn(char key); // keyの音を鳴らす。
 		
 		void noteOff(); // 鳴っている音を止める。
+
+		void addKey(int val); // キーをvalだけ加算する。
 		
 		char key; // キー。デフォルト72。
 		char offset; // どのボタンでキーの音が鳴るか。0で十字ボタン下。1で十字ボタン左。-1では十字ボタン下でレの音が鳴る。
