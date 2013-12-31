@@ -1,4 +1,5 @@
 #include <SNESpad.h>
+#include "BandBros.h"
 
 SNESpad pad(2,3,4); // pin2:S/P, pin3:CLK, pin4:DAT
 BandBros game(6); // pin6:BUZZ
