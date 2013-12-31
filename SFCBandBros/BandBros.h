@@ -14,7 +14,7 @@ class BandBros{
 		// コンストラクタ。バンブラの初期化。
 		// buzzPin:ブザー出力のピン番号。-1の場合はブザー無し。
 		
-		void init(byte buzzPin); // 全部初期化する。
+		void reset(); // 全部初期化する。
 		
 		void decode(int buttons);
 		// 入力が変更されたときに起動し、ボタン入力によって処理を行う。
