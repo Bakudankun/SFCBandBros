@@ -18,6 +18,13 @@ void BandBros::decode(int buttons)
 	// buttons:変更されたボタン
 {
 	if(buttons == BandBros::buttons) return;
+	if(buttons & SNES_START){
+		int ctrl = buttons & (SNES_UP)
+		switch(buttons & BandBros::buttons)
+	}
+	if(buttons ^ BandBros::buttons){
+		
+	}
 
 	BandBros::buttons = buttons;
 }
@@ -98,7 +105,8 @@ void BandBros::noteOn(char key){
 
 void BandBros::noteOff(){
 	if(playing < 0) return;
-	if(buzzer) buzzer.noteOff;
+	if(buzzer) buzzer.noteOff();
 	playing = -1;
 	return;
 }
+

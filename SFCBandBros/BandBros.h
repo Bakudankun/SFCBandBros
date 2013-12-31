@@ -34,7 +34,8 @@ class BandBros{
 		char key; // キー。デフォルト72。
 		char offset; // どのボタンでキーの音が鳴るか。0で十字ボタン下。1で十字ボタン左。-1では十字ボタン下でレの音が鳴る。
 		char playing; // 今どの音を鳴らしているか。何も鳴らしていない場合は-1にする。
-		int buttons; // ボタン入力
+		int buttons; // ボタン入力を最後に記録して変化を抽出するのに使う
+		byte noteCounter; // LRの挙動に使うカウンター。0以外の時は既に鳴っている音に対してLRが利く。
 		Buzzer *buzzer; // ブザー出力。ブザーが無い時はnull。
 		
 };
