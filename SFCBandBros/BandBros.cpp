@@ -45,7 +45,6 @@ void BandBros::decode(int buttons){
 		if(ctrl & SNES_DOWN) addKey(-12);
 		if(ctrl & SNES_L) offset--;
 		if(ctrl & SNES_R) offset++;
-		key = constrain(key, 0, 127);
 	} else if(ctrl = (buttons & ~prevButtons) & (SNES_A | SNES_B | SNES_X | SNES_Y | SNES_UP | SNES_DOWN | SNES_LEFT | SNES_RIGHT)){
 		for(int i = 0; i < 12; i++){
 			if(bitRead(ctrl, i)){
@@ -55,7 +54,7 @@ void BandBros::decode(int buttons){
 				break;
 			}
 		}
-	} else if((noteCounter > 0) && ((buttons ^ ~prevButtons) & (SNES_L | SNES_R))){
+	} else if((noteCounter > 0) && ((buttons ^ prevButtons) & (SNES_L | SNES_R))){
 		noteOn(playing + ((buttons & SNES_L) - (prevButtons & SNES_L))/SNES_L + ((buttons & SNES_R) - (prevButtons & SNES_R))*12/SNES_R);
 		noteCounter = LRCOUNTER;
 	}
