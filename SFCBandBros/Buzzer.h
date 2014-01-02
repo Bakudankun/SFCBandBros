@@ -24,7 +24,7 @@ class Buzzer{
 		// キー番号からtone関数で使うための周波数をunsigned intで返す。
 		// key: キー番号。MIDIに従い、A4が81。
 		// return: 周波数。tone関数の引数がunsigned intのため四捨五入して返す。
-		//         A4が440Hzだが、10Hzを下回らない。
+		//         A4が440Hzだが、31Hzを下回らない。
 		
 		byte pin; // ブザー出力のピン番号
 
