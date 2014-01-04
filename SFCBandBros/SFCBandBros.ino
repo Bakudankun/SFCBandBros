@@ -15,10 +15,10 @@ void loop(){ // 起動後ループしつづける関数
 	if(input & SNES_B) Serial.print("B ");
 	if(input & SNES_X) Serial.print("X ");
 	if(input & SNES_Y) Serial.print("Y ");
-	if(input & SNES_UP) Serial.print("u ");
-	if(input & SNES_DOWN) Serial.print("d ");
-	if(input & SNES_LEFT) Serial.print("l ");
-	if(input & SNES_RIGHT) Serial.print("r ");
+	if(input & SNES_UP) Serial.print("^ ");
+	if(input & SNES_DOWN) Serial.print("v ");
+	if(input & SNES_LEFT) Serial.print("< ");
+	if(input & SNES_RIGHT) Serial.print("> ");
 	if(input & SNES_L) Serial.print("L ");
 	if(input & SNES_R) Serial.print("R ");
 	if(input & SNES_START) Serial.print("St ");
