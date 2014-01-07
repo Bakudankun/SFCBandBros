@@ -5,16 +5,19 @@
 
 #include "Arduino.h"
 
-#define YMZ294_NORMAL 0
-#define YMZ294_UNISON 1
-#define YMZ294_OCTAVE 2
-#define YMZ294_5TH 3
+#define YMZ294_MODE_NORMAL 0
+#define YMZ294_MODE_UNISON 1
+#define YMZ294_MODE_OCTAVE 2
+#define YMZ294_MODE_5TH 3
 
 #define PITCH_RANGE 2
 
 class YMZ294{
 	public:
-		YMZ294(); // コンストラクタ
+		YMZ294(byte wr, byte a0); 
+		// コンストラクタ。
+		// wr:WRに使用するピン番号。
+		// a0:A0に使用するピン番号。
 
 		void noteOn(char note);
 		// MIDIノート番号noteの音を発音する。
@@ -51,6 +54,8 @@ class YMZ294{
 		// 音色を設定する。
 		// tone:設定する音色。今はYMZ294_NORMALのみ。
 
+		byte m_wrPin; // WRに使用するピン番号
+		byte m_a0Pin; // A0に使用するピン番号
 		int m_playing; // 今どの音を鳴らしているか。鳴らしていない場合は-1。
 		int m_pitch; // ピッチベンドの値
 		char m_expression; // エクスプレッション値
