@@ -1,16 +1,23 @@
 /* 
  * ArduinoでYMZ294.hをモノフォニックシンセサイザにしてMIDIっぽい命令で制御するクラス。
+ * シフトレジスタを用いないので、使うにはArduinoのポートを丸々一つと、制御用に2つの計10ピン消費する。
  * noteOn/Offとピッチベンド調整、音量調節などができる。
  */
 
 #include "Arduino.h"
+
+#ifndef YMZ294_PORT
+#define YMZ294_PORT B // ArduinoからYMZ294にデータを送るポート
+#endif
 
 #define YMZ294_MODE_NORMAL 0
 #define YMZ294_MODE_UNISON 1
 #define YMZ294_MODE_OCTAVE 2
 #define YMZ294_MODE_5TH 3
 
+#ifndef PITCH_RANGE
 #define PITCH_RANGE 2
+#endif
 
 class YMZ294{
 	public:
