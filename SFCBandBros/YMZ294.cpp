@@ -30,7 +30,7 @@ void YMZ294::noteOff();
 
 void YMZ294::setPitch(int pitch);
 // ピッチベンドを設定する。
-// pitch:設定するピッチベンド値。-8192〜8191の間。
+// pitch:設定するピッチベンド値。-8192～8191の間。
 
 void YMZ294::setExpression(char val);
 // エクスプレッション値をvalに設定する。
@@ -43,7 +43,7 @@ void YMZ294::prevTone();
 
 int writeResister(byte addr, byte val){
 // レジスタaddrに値valを書き込む。
-// addr:レジスタ番号。0x00〜0x0D。
+// addr:レジスタ番号。0x00～0x0D。
 // val:書き込む値
 // return:成否
 

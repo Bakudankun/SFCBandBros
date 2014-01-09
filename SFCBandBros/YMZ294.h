@@ -34,7 +34,7 @@ class YMZ294{
 
 		void setPitch(int pitch);
 		// ピッチベンドを設定する。
-		// pitch:設定するピッチベンド値。-8192〜8191の間。
+		// pitch:設定するピッチベンド値。-8192～8191の間。
 
 		void setExpression(char val);
 		// エクスプレッション値をvalに設定する。
@@ -48,7 +48,7 @@ class YMZ294{
 	private:
 		void writeResister(byte addr, byte val);
 		// レジスタaddrに値valを書き込む。
-		// addr:レジスタ番号。0x00〜0x0D。
+		// addr:レジスタ番号。0x00～0x0D。
 		// val:書き込む値
 
 		float ntof(char note, int pitch);
