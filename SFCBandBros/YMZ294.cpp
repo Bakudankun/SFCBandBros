@@ -35,26 +35,35 @@ void YMZ294::setPitch(int pitch);
 void YMZ294::setExpression(char val);
 // エクスプレッション値をvalに設定する。
 
-void YMZ294::nextTone();
-// 次の音色に切り替える。
-
-void YMZ294::prevTone();
-// 前の音色に切り替える。
-
-int writeResister(byte addr, byte val){
-// レジスタaddrに値valを書き込む。
-// addr:レジスタ番号。0x00～0x0D。
-// val:書き込む値
-// return:成否
-
-	
+void YMZ294::nextTone(){
+	setTone((m_tone + 1) % 3);
+	return;
 }
 
-float ntof(char note, int pitch);
-// ノート番号とピッチベンド値から発音する周波数を計算する。
-// note:ノート番号
-// pitch:ピッチベンド値
-// return:周波数
+void YMZ294::prevTone(){
+	setTone((m_tone - 1) % 3);
+	return;
+}
+
+int writeResister(byte addr, byte val){
+	if(addr > 0x0D) return 1;
+
+	digitalWrite(m_wr, LOW);
+	digitalWrite(m_a0, LOW);
+	PORTP = addr;
+	digitalWrite(m_wr, HIGH);
+	digitalWrite(m_wr, LOW);
+	digitalWrite(m_a0, HIGH);
+	PORTP = val;
+	digitalWrite(m_wr, HIGH);
+	digitalWrite(m_wr, LOW);
+	digitalWrite(m_a0, LOW);
+	PORTP = 0;
+}
+
+float ntof(char note, int pitch){
+	return NOTE_A4 * pow(2, (key - 81 + ((float)constrain(pitch, -8191, 8192)) / 8192)/12.0);
+}
 
 void setTone(byte tone);
 // 音色を設定する。

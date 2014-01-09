@@ -50,6 +50,7 @@ class YMZ294{
 		// レジスタaddrに値valを書き込む。
 		// addr:レジスタ番号。0x00～0x0D。
 		// val:書き込む値
+		// return:成否。成功したら0。
 
 		float ntof(char note, int pitch);
 		// ノート番号とピッチベンド値から発音する周波数を計算する。
