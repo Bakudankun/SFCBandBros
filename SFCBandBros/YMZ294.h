@@ -4,14 +4,14 @@
  * noteOn/Offとピッチベンド調整、音量調節などができる。
  */
 
+#ifndef _YMZ294_H_
+#define _YMZ294_H_
+
 #include "Arduino.h"
 
 /* 設定可能項目 */
 #ifndef YMZ294_PORT
-#define YMZ294_PORT B // ArduinoからYMZ294にデータを送るポート
-#endif
-#ifndef YMZ294_CLOCK
-#define YMZ294_CLOCK 4000000 // YMZ294のマスタークロック
+#define YMZ294_PORT C // ArduinoからYMZ294にデータを送るポート
 #endif
 #ifndef PITCH_RANGE
 #define PITCH_RANGE 2 // ピッチベンドのレンジ
@@ -84,4 +84,6 @@ class YMZ294{
 		int m_pitch; // ピッチベンドの値。-8192～8191の間。
 		byte m_tone; // 音色
 		byte m_volume; // 全体の音量
-}
+};
+
+#endif

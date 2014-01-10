@@ -2,8 +2,9 @@
 
 #define LRCOUNTER 15
 
-BandBros::BandBros(byte buzzPin){
-	if(buzzPin >= 0 && buzzPin <= 13) buzzer = new Buzzer(buzzPin);
+BandBros::BandBros(Buzzer *buzzer, YMZ294 *ymz294){
+	m_buzzer = buzz;
+	m_ymz294 = ymz294;
 	key = 72;
 	offset = 0;
 	playing = -1;
@@ -160,14 +161,16 @@ char BandBros::btok(int button){
 void BandBros::noteOn(char key){
 	key = constrain(key, 0, 127);
 	if(playing >= 0) noteOff();
-	if(buzzer) buzzer->noteOn(key);
+	if(m_buzzer) m_buzzer->noteOn(key);
+	if(m_ymz294) m_ymz294->noteOn(key);
 	playing = key;
 	return;
 }
 
 void BandBros::noteOff(){
 	if(playing < 0) return;
-	if(buzzer) buzzer->noteOff();
+	if(m_buzzer) m_buzzer->noteOff();
+	if(m_ymz294) m_ymz294->noteOff();
 	playing = -1;
 	return;
 }

@@ -107,7 +107,7 @@ int YMZ294::writeResister(byte addr, byte val){
 }
 
 float YMZ294::ntof(char note, int pitch){
-	return NOTE_A4 * pow(2, (key - 81 + ((float)constrain(pitch, -8191, 8192)) / 8192)/12.0);
+	return NOTE_A4 * pow(2, (key - 81 + PITCH_RANGE * ((float)constrain(pitch, -8191, 8191)) / 8191) / 12.0);
 }
 
 unsigned int YMZ294::ftotp(float freq){
