@@ -6,25 +6,23 @@
 
 #include "Arduino.h"
 
+/* 設定可能項目 */
 #ifndef YMZ294_PORT
 #define YMZ294_PORT B // ArduinoからYMZ294にデータを送るポート
 #endif
-
-#define YMZ294_MODE_NORMAL 0
-#define YMZ294_MODE_UNISON 1
-#define YMZ294_MODE_OCTAVE 2
-#define YMZ294_MODE_5TH 3
-
+#ifndef YMZ294_CLOCK
+#define YMZ294_CLOCK 4000000 // YMZ294のマスタークロック
+#endif
 #ifndef PITCH_RANGE
-#define PITCH_RANGE 2
+#define PITCH_RANGE 2 // ピッチベンドのレンジ
 #endif
 
 class YMZ294{
 	public:
 		YMZ294(byte wr, byte a0); 
-		// コンストラクタ。
-		// wr:WRに使用するピン番号。
-		// a0:A0に使用するピン番号。
+		// コンストラクタ
+		// wr:WRに使用するピン番号
+		// a0:A0に使用するピン番号
 
 		void noteOn(char note);
 		// MIDIノート番号noteの音を発音する。
@@ -36,14 +34,17 @@ class YMZ294{
 		// ピッチベンドを設定する。
 		// pitch:設定するピッチベンド値。-8192～8191の間。
 
-		void setExpression(char val);
-		// エクスプレッション値をvalに設定する。
-
 		void nextTone();
 		// 次の音色に切り替える。
 
 		void prevTone();
 		// 前の音色に切り替える。
+
+		void gainVolume();
+		// 全体音量を上げる。
+
+		void loseVolume();
+		// 全体音量を下げる。
 
 	private:
 		void writeResister(byte addr, byte val);
@@ -58,14 +59,29 @@ class YMZ294{
 		// pitch:ピッチベンド値
 		// return:周波数
 
+		unsigned int ftotp(float freq);
+		// 周波数の値から変数TPとして出力されるべき12ビットの値に変換する。
+		// freq:出力したい周波数
+		// return:TPとして出力するべき値
+
 		void setTone(byte tone);
 		// 音色を設定する。
 		// tone:設定する音色。今はYMZ294_NORMALのみ。
 
-		byte m_wrPin; // WRに使用するピン番号
-		byte m_a0Pin; // A0に使用するピン番号
-		int m_playing; // 今どの音を鳴らしているか。鳴らしていない場合は-1。
-		int m_pitch; // ピッチベンドの値
-		char m_expression; // エクスプレッション値
+		void setVolume(byte vol);
+		// 全体の音量を設定する。0～15の16段階。
+		// vol:設定する音量。0～15。
+
+		int setFrequency(byte channel, float freq);
+		// 各チャンネルの周波数を設定する。
+		// channel:設定するチャンネル。0～2。
+		// freq:設定する周波数。
+		// return:成否。成功したら0。
+
+		byte m_wr; // WRに使用するピン番号
+		byte m_a0; // A0に使用するピン番号
+		char m_playing; // 今MIDIノート番号でどの音を鳴らしているか。鳴らしていない場合は-1。
+		int m_pitch; // ピッチベンドの値。-8192～8191の間。
 		byte m_tone; // 音色
+		byte m_volume; // 全体の音量
 }
