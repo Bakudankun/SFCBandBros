@@ -47,7 +47,7 @@ class YMZ294{
 		// 全体音量を下げる。
 
 	private:
-		void writeResister(byte addr, byte val);
+		int writeResister(byte addr, byte val);
 		// レジスタaddrに値valを書き込む。
 		// addr:レジスタ番号。0x00～0x0D。
 		// val:書き込む値

@@ -2,7 +2,7 @@
 
 #define LRCOUNTER 15
 
-BandBros::BandBros(Buzzer *buzzer, YMZ294 *ymz294){
+BandBros::BandBros(Buzzer *buzz, YMZ294 *ymz294){
 	m_buzzer = buzz;
 	m_ymz294 = ymz294;
 	key = 72;
