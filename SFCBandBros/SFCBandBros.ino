@@ -4,6 +4,7 @@
 #define YMZ294_PORT D // ArduinoからYMZ294にデータを送るポート
 #define YMZ294_WR 11 // YMZ294のWRピン
 #define YMZ294_A0 12 // YMZ294のA0ピン
+#define YMZ294_RST 13 // YMZ294のRSTピン
 #define BUZZER 8 // ブザーに繋ぐピン
 
 #include <SNESpad.h>
@@ -19,7 +20,7 @@ BandBros *game;
 void setup(){ // 起動時に一度だけ呼ばれる初期化関数
 	pad = new SNESpad(SNESPAD_SP,SNESPAD_CLK,SNESPAD_DAT);
 	// buzzer = new Buzzer(BUZZER);
-	ymz294 = new YMZ294(YMZ294_WR, YMZ294_A0);
+	ymz294 = new YMZ294(YMZ294_WR, YMZ294_A0, YMZ294_RST);
 	game = new BandBros(buzzer, ymz294);
 	// Serial.begin(57600);
 }

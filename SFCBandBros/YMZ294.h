@@ -11,7 +11,7 @@
 
 /* 設定可能項目 */
 #ifndef YMZ294_PORT
-#define YMZ294_PORT C // ArduinoからYMZ294にデータを送るポート
+#define YMZ294_PORT D // ArduinoからYMZ294にデータを送るポート
 #endif
 #ifndef PITCH_RANGE
 #define PITCH_RANGE 2 // ピッチベンドのレンジ
@@ -19,10 +19,14 @@
 
 class YMZ294{
 	public:
-		YMZ294(byte wr, byte a0); 
+		YMZ294(byte wr, byte a0, byte rst); 
 		// コンストラクタ
 		// wr:WRに使用するピン番号
 		// a0:A0に使用するピン番号
+		// rst:RSTに使用するピン番号
+
+		void reset();
+		// RSTを0にしてYMZ294をリセットする。
 
 		void noteOn(char note);
 		// MIDIノート番号noteの音を発音する。
@@ -64,13 +68,13 @@ class YMZ294{
 		// freq:出力したい周波数
 		// return:TPとして出力するべき値
 
-		void setTone(byte tone);
+		void setTone(char tone);
 		// 音色を設定する。
 		// tone:設定する音色。今はYMZ294_NORMALのみ。
 
-		void setVolume(byte vol);
+		void setVolume(char vol);
 		// 全体の音量を設定する。0～15の16段階。
-		// vol:設定する音量。0～15。
+		// vol:設定する音量。0～15。これを外れた場合はconstrainされる。
 
 		int setFrequency(byte channel, float freq);
 		// 各チャンネルの周波数を設定する。
@@ -80,6 +84,7 @@ class YMZ294{
 
 		byte m_wr; // WRに使用するピン番号
 		byte m_a0; // A0に使用するピン番号
+		byte m_rst; // rstに使用するピン番号
 		char m_playing; // 今MIDIノート番号でどの音を鳴らしているか。鳴らしていない場合は-1。
 		int m_pitch; // ピッチベンドの値。-8192～8191の間。
 		byte m_tone; // 音色

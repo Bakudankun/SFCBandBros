@@ -1,8 +1,11 @@
 #include "Arduino.h"
 #include "YMZ294.h"
 
-#define DDRP DDR ## D
-#define PORTP PORT ## D
+#define YMZ294_CONCAT(a, b) a ## b
+#define YMZ294_DDRPORT(a) YMZ294_CONCAT(DDR, a)
+#define YMZ294_OUTPORT(a) YMZ294_CONCAT(PORT, a)
+#define DDRP YMZ294_DDRPORT(YMZ294_PORT)
+#define PORTP YMZ294_OUTPORT(YMZ294_PORT)
 
 #define YMZ294_MODE_NORMAL 0
 #define YMZ294_MODE_DETUNE 1
@@ -12,30 +15,42 @@
 
 #define NOTE_A4  440
 
-YMZ294::YMZ294(byte wr, byte a0){
+YMZ294::YMZ294(byte wr, byte a0, byte rst){
 	m_wr = wr;
 	m_a0 = a0;
+	m_rst = rst;
 	pinMode(m_wr, OUTPUT);
 	pinMode(m_a0, OUTPUT);
+	pinMode(m_rst, OUTPUT);
+	digitalWrite(m_rst, LOW);
 	digitalWrite(m_wr, HIGH);
 	digitalWrite(m_a0, LOW);
 	DDRP = B11111111;
 	PORTP = B00000000;
+	delay(100);
+	digitalWrite(m_rst, HIGH);
+	delay(200);
 
 	noteOff();
 	setPitch(0);
 	setTone(YMZ294_MODE_NORMAL);
-	setVolume(15);
+	setVolume(10);
+}
 
-	noteOn(84);
-	delay(500);
-	noteOn(88);
-	delay(500);
-	noteOn(91);
-	delay(500);
-	noteOn(96);
-	delay(500);
+void YMZ294::reset(){
+	digitalWrite(m_rst, LOW);
+	digitalWrite(m_wr, HIGH);
+	digitalWrite(m_a0, LOW);
+	DDRP = B11111111;
+	PORTP = B00000000;
+	delay(100);
+	digitalWrite(m_rst, HIGH);
+	delay(200);
+
 	noteOff();
+	setPitch(0);
+	setTone(YMZ294_MODE_NORMAL);
+	setVolume(10);
 }
 
 void YMZ294::noteOn(char note){
@@ -44,23 +59,33 @@ void YMZ294::noteOn(char note){
 	switch(m_tone){
 		case YMZ294_MODE_NORMAL: // ノーマルモード
 			setFrequency(0, ntof(note, m_pitch));
-			if(!m_playing) writeResister(0x07, B111110);
+			if(m_playing < 0) writeResister(0x07, B111110);
 			break;
 
 		case YMZ294_MODE_DETUNE: // デチューンモード
+			setFrequency(0, ntof(note, m_pitch));
+			setFrequency(1, ntof(note, m_pitch)*1.01);
+			setFrequency(2, ntof(note, m_pitch)*0.99);
+			if(m_playing < 0) writeResister(0x07, B111000);
 			break;
 
 		case YMZ294_MODE_OCTAVE: // オクターブモード
+			setFrequency(0, ntof(note, m_pitch));
+			setFrequency(1, ntof(note, m_pitch)*2);
+			if(m_playing < 0) writeResister(0x07, B111100);
 			break;
 
 		case YMZ294_MODE_5TH: // 5THモード
+			setFrequency(0, ntof(note, m_pitch));
+			setFrequency(1, ntof(note, m_pitch)*3/2);
+			if(m_playing < 0) writeResister(0x07, B111100);
 			break;
 	}
 	m_playing = note;
 }
 
 void YMZ294::noteOff(){
-	if(m_playing) writeResister(0x07, B111111);
+	if(m_playing >= 0) writeResister(0x07, B111111);
 	m_playing = -1;
 	return;
 }
@@ -69,38 +94,51 @@ void YMZ294::setPitch(int pitch){
 	m_pitch = constrain(pitch, -8192, 8191);
 	switch(m_tone){
 		case YMZ294_MODE_NORMAL: // ノーマルモード
-			if(!m_playing)setFrequency(0, ntof(m_playing, m_pitch));
+			if(m_playing >= 0)setFrequency(0, ntof(m_playing, m_pitch));
 			break;
 
 		case YMZ294_MODE_DETUNE: // デチューンモード
+			if(m_playing >= 0){
+				setFrequency(0, ntof(m_playing, m_pitch));
+				setFrequency(1, ntof(m_playing, m_pitch)*1.01);
+				setFrequency(2, ntof(m_playing, m_pitch)*0.99);
+			}
 			break;
 
 		case YMZ294_MODE_OCTAVE: // オクターブモード
+			if(m_playing >= 0){
+				setFrequency(0, ntof(m_playing, m_pitch));
+				setFrequency(1, ntof(m_playing, m_pitch)*2);
+			}
 			break;
 
 		case YMZ294_MODE_5TH: // 5THモード
+			if(m_playing >= 0){
+				setFrequency(0, ntof(m_playing, m_pitch));
+				setFrequency(1, ntof(m_playing, m_pitch)*3/2);
+			}
 			break;
 	}
 	return;
 }
 
 void YMZ294::nextTone(){
-	setTone((m_tone + 1) % YMZ294_MODE_NUMBER);
+	setTone((char)m_tone + 1);
 	return;
 }
 
 void YMZ294::prevTone(){
-	setTone((m_tone + YMZ294_MODE_NUMBER - 1) % YMZ294_MODE_NUMBER);
+	setTone((char)m_tone - 1);
 	return;
 }
 
 void YMZ294::gainVolume(){
-	setVolume(m_volume = constrain(m_volume + 1, 0, 15));
+	setVolume((char)m_volume + 1);
 	return;
 }
 
 void YMZ294::loseVolume(){
-	setVolume(m_volume = constrain(m_volume - 1, 0, 15));
+	setVolume((char)m_volume - 1);
 	return;
 }
 
@@ -127,17 +165,16 @@ unsigned int YMZ294::ftotp(float freq){
 	return (unsigned int)constrain((float)125000 / freq + 0.5, 1, (1 << 12) - 1);
 }
 
-void YMZ294::setTone(byte tone){
+void YMZ294::setTone(char tone){
 	// 音色を設定する。
 	// tone:設定する音色。今はYMZ294_NORMALのみ。
-	m_tone = tone;
+	m_tone = constrain(tone, 0, YMZ294_MODE_NUMBER - 1);
 	return;
 }
 
-void YMZ294::setVolume(byte vol){
-	vol = constrain(vol, 0, 15);
-	for(byte i=0x08; i<=0x0A; i++) writeResister(i, vol);
-	m_volume = vol;
+void YMZ294::setVolume(char vol){
+	m_volume = constrain(vol, 0, B1111);
+	for(byte i=0x08; i<=0x0A; i++) writeResister(i, m_volume);
 	return;
 }
 
