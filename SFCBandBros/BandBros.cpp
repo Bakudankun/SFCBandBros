@@ -2,8 +2,9 @@
 
 #define LRCOUNTER 15
 
-BandBros::BandBros(byte buzzPin){
-	if(buzzPin >= 0 && buzzPin <= 13) buzzer = new Buzzer(buzzPin);
+BandBros::BandBros(Buzzer *buzz, YMZ294 *ymz294){
+	m_buzzer = buzz;
+	m_ymz294 = ymz294;
 	key = 72;
 	offset = 0;
 	playing = -1;
@@ -14,6 +15,7 @@ BandBros::BandBros(byte buzzPin){
 
 void BandBros::reset(){
 	noteOff();
+	if(m_ymz294) m_ymz294->reset();
 	key = 72;
 	offset = 0;
 	playing = -1;
@@ -45,6 +47,24 @@ void BandBros::decode(int buttons){
 		if(ctrl & SNES_DOWN) addKey(-12);
 		if(ctrl & SNES_L) offset--;
 		if(ctrl & SNES_R) offset++;
+		if(ctrl & SNES_SELECT){
+			key = 72;
+			offset = 0;
+		}
+	} else if(buttons & SNES_SELECT){
+		ctrl = buttons & ~prevButtons;
+		if(ctrl & SNES_LEFT){
+			if(m_ymz294) m_ymz294->prevTone();
+		}
+		if(ctrl & SNES_RIGHT){
+			if(m_ymz294) m_ymz294->nextTone();
+		}
+		if(ctrl & SNES_UP){
+			if(m_ymz294) m_ymz294->gainVolume();
+		}
+		if(ctrl & SNES_DOWN){
+			if(m_ymz294) m_ymz294->loseVolume();
+		}
 	} else if(ctrl = (buttons & ~prevButtons) & (SNES_A | SNES_B | SNES_X | SNES_Y | SNES_UP | SNES_DOWN | SNES_LEFT | SNES_RIGHT)){
 		for(int i = 0; i < 12; i++){
 			if(bitRead(ctrl, i)){
@@ -54,9 +74,8 @@ void BandBros::decode(int buttons){
 				break;
 			}
 		}
-	} else if((noteCounter > 0) && ((buttons ^ prevButtons) & (SNES_L | SNES_R))){
-		noteOn(playing + ((buttons & SNES_L) - (prevButtons & SNES_L))/SNES_L + ((buttons & SNES_R) - (prevButtons & SNES_R))*12/SNES_R);
-		noteCounter = LRCOUNTER;
+	} else if(noteCounter && ((buttons ^ prevButtons) & (SNES_L | SNES_R))){
+		noteOn(playing + ((buttons & SNES_L) - (prevButtons & SNES_L))/SNES_L + ((buttons & SNES_R) - (prevButtons & SNES_R))/SNES_R*12);
 	}
 
 	prevButtons = buttons;
@@ -160,14 +179,16 @@ char BandBros::btok(int button){
 void BandBros::noteOn(char key){
 	key = constrain(key, 0, 127);
 	if(playing >= 0) noteOff();
-	if(buzzer) buzzer->noteOn(key);
+	if(m_buzzer) m_buzzer->noteOn(key);
+	if(m_ymz294) m_ymz294->noteOn(key);
 	playing = key;
 	return;
 }
 
 void BandBros::noteOff(){
 	if(playing < 0) return;
-	if(buzzer) buzzer->noteOff();
+	if(m_buzzer) m_buzzer->noteOff();
+	if(m_ymz294) m_ymz294->noteOff();
 	playing = -1;
 	return;
 }

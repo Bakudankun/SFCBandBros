@@ -10,12 +10,13 @@
 #include "Arduino.h"
 #include <SNESpad.h>
 #include "Buzzer.h"
+#include "YMZ294.h"
 
 class BandBros{
 	public:
-		BandBros(byte buzzPin = -1);
+		BandBros(Buzzer *buzzer, YMZ294 *ymz294);
 		// コンストラクタ。バンブラの初期化。
-		// buzzPin:ブザー出力のピン番号。-1の場合はブザー無し。
+		// buzzer:ブザー出力のピン番号。-1の場合はブザー無し。
 		
 		void reset(); // 全部初期化する。
 		
@@ -42,7 +43,8 @@ class BandBros{
 		int playButton; // どのボタンが音を鳴らしているか。SNESpadに従うビットのうち１つが1になる。
 		int prevButtons; // ボタン入力を最後に記録して変化を抽出するのに使う
 		byte noteCounter; // LRの挙動に使うカウンター。0以外の時は既に鳴っている音に対してLRが利く。
-		Buzzer *buzzer; // ブザー出力。ブザーが無い時はnull。
+		Buzzer *m_buzzer; // ブザー出力。ブザーが無い時はnull。
+		YMZ294 *m_ymz294; // 音源ICのYMZ294。無い時はnull。
 		
 };
 
