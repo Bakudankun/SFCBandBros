@@ -25,12 +25,11 @@ class BandBros{
 		void reset();
 		// 全部初期化する。
 
-		int getInput();
-		// ボタン入力をint型の変数に格納する。SNESpad.h参照。
+		void input();
+		// ボタン入力をbuttonsに格納し(SNESpad.h参照)、加速度センサー(あれば)の値をaccelに格納する。
 		
-		void decode(int buttons);
+		void decode();
 		// 入力が変更されたときに起動し、ボタン入力によって処理を行う。
-		// buttons:変更されたボタン
 		
 	
 	private:
@@ -49,7 +48,11 @@ class BandBros{
 		char offset; // どのボタンでキーの音が鳴るか。0で十字ボタン下。1で十字ボタン左。-1では十字ボタン下でレの音が鳴る。
 		char playing; // 今何番のノートがONか。何も鳴らしていない場合は-1にする。
 		int playButton; // どのボタンが音を鳴らしているか。SNESpadに従うビットのうち１つが1になる。
+		int buttons; // 入力されたボタン。
 		int prevButtons; // ボタン入力を最後に記録して変化を抽出するのに使う
+#if ADXL362_EXIST
+		int accel[3]; // 加速度センサーの値。x/y/zの順にaccel[0/1/2]。
+#endif
 		byte noteCounter; // LRの挙動に使うカウンター。0以外の時は既に鳴っている音に対してLRが利く。
 		SNESpad m_pad; // コントローラー入力
 #if BUZZER_EXIST

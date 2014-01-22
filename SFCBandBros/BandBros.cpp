@@ -21,8 +21,10 @@ void BandBros::reset(){
 	return;
 }
 
-int BandBros::getInput(){
-	return m_pad.buttons();
+void BandBros::input(){
+	buttons = m_pad.buttons();
+#if ADXL362_EXIST
+
 }
 
 void BandBros::decode(int buttons){
