@@ -2,20 +2,16 @@
 
 #define LRCOUNTER 15
 
-BandBros::BandBros(Buzzer *buzz, YMZ294 *ymz294){
-	m_buzzer = buzz;
-	m_ymz294 = ymz294;
-	key = 72;
-	offset = 0;
-	playing = -1;
-	playButton = 0;
-	prevButtons = 0;
-	noteCounter = 0;
+BandBros::BandBros()
+	: key(72), offset(0), playing(-1), playButton(0), prevButtons(0), noteCounter(0)
+{
 }
 
 void BandBros::reset(){
 	noteOff();
-	if(m_ymz294) m_ymz294->reset();
+#if YMZ294_EXIST
+	m_ymz294.reset();
+#endif
 	key = 72;
 	offset = 0;
 	playing = -1;
@@ -23,6 +19,10 @@ void BandBros::reset(){
 	prevButtons = 0;
 	noteCounter = 0;
 	return;
+}
+
+int BandBros::getInput(){
+	return m_pad.buttons();
 }
 
 void BandBros::decode(int buttons){
@@ -54,16 +54,24 @@ void BandBros::decode(int buttons){
 	} else if(buttons & SNES_SELECT){
 		ctrl = buttons & ~prevButtons;
 		if(ctrl & SNES_LEFT){
-			if(m_ymz294) m_ymz294->prevTone();
+#if YMZ294_EXIST
+			m_ymz294.prevTone();
+#endif
 		}
 		if(ctrl & SNES_RIGHT){
-			if(m_ymz294) m_ymz294->nextTone();
+#if YMZ294_EXIST
+			m_ymz294.nextTone();
+#endif
 		}
 		if(ctrl & SNES_UP){
-			if(m_ymz294) m_ymz294->gainVolume();
+#if YMZ294_EXIST
+			m_ymz294.gainVolume();
+#endif
 		}
 		if(ctrl & SNES_DOWN){
-			if(m_ymz294) m_ymz294->loseVolume();
+#if YMZ294_EXIST
+			m_ymz294.loseVolume();
+#endif
 		}
 	} else if(ctrl = (buttons & ~prevButtons) & (SNES_A | SNES_B | SNES_X | SNES_Y | SNES_UP | SNES_DOWN | SNES_LEFT | SNES_RIGHT)){
 		for(int i = 0; i < 12; i++){
@@ -179,16 +187,24 @@ char BandBros::btok(int button){
 void BandBros::noteOn(char key){
 	key = constrain(key, 0, 127);
 	if(playing >= 0) noteOff();
-	if(m_buzzer) m_buzzer->noteOn(key);
-	if(m_ymz294) m_ymz294->noteOn(key);
+#if BUZZER_EXIST
+	m_buzzer.noteOn(key);
+#endif
+#if YMZ294_EXIST
+	m_ymz294.noteOn(key);
+#endif
 	playing = key;
 	return;
 }
 
 void BandBros::noteOff(){
 	if(playing < 0) return;
-	if(m_buzzer) m_buzzer->noteOff();
-	if(m_ymz294) m_ymz294->noteOff();
+#if BUZZER_EXIST
+	m_buzzer.noteOff();
+#endif
+#if YMZ294_EXIST
+	m_ymz294.noteOff();
+#endif
 	playing = -1;
 	return;
 }

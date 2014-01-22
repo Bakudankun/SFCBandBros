@@ -8,17 +8,25 @@
 #define _BANDBROS_H_
 
 #include "Arduino.h"
+#include "BBsettings.h"
 #include <SNESpad.h>
+#if BUZZER_EXIST
 #include "Buzzer.h"
+#endif
+#if YMZ294_EXIST
 #include "YMZ294.h"
+#endif
 
 class BandBros{
 	public:
-		BandBros(Buzzer *buzzer, YMZ294 *ymz294);
+		BandBros();
 		// コンストラクタ。バンブラの初期化。
-		// buzzer:ブザー出力のピン番号。-1の場合はブザー無し。
 		
-		void reset(); // 全部初期化する。
+		void reset();
+		// 全部初期化する。
+
+		int getInput();
+		// ボタン入力をint型の変数に格納する。SNESpad.h参照。
 		
 		void decode(int buttons);
 		// 入力が変更されたときに起動し、ボタン入力によって処理を行う。
@@ -43,8 +51,13 @@ class BandBros{
 		int playButton; // どのボタンが音を鳴らしているか。SNESpadに従うビットのうち１つが1になる。
 		int prevButtons; // ボタン入力を最後に記録して変化を抽出するのに使う
 		byte noteCounter; // LRの挙動に使うカウンター。0以外の時は既に鳴っている音に対してLRが利く。
-		Buzzer *m_buzzer; // ブザー出力。ブザーが無い時はnull。
-		YMZ294 *m_ymz294; // 音源ICのYMZ294。無い時はnull。
+		SNESpad m_pad; // コントローラー入力
+#if BUZZER_EXIST
+		Buzzer m_buzzer; // ブザー出力
+#endif
+#if YMZ294_EXIST
+		YMZ294 m_ymz294; // 音源ICのYMZ294
+#endif
 		
 };
 

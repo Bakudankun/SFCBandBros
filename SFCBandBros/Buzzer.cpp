@@ -3,9 +3,8 @@
 #define NOTE_A4  440
 #define LOW_LIMIT 31
 
-Buzzer::Buzzer(byte pin){
-	pinMode(pin, OUTPUT);
-	Buzzer::pin = pin;
+Buzzer::Buzzer(){
+	pinMode(pin = BUZZER_OUT, OUTPUT);
 }
 
 void Buzzer::noteOn(char key){

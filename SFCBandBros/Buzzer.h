@@ -6,12 +6,12 @@
 #define _BUZZER_H_
 
 #include "Arduino.h"
+#include "BBsettings.h"
 
 class Buzzer{
 	public:
-		Buzzer(byte pin);
-		// コンストラクタ。ピン番号pinのブザーを起動する。
-		// pin:ブザーを繋いだピン番号
+		Buzzer();
+		// コンストラクタ。ピン番号BUZZER_OUTのブザーを起動する。
 		
 		void noteOn(char key);
 		// ノート番号keyの音を鳴らす。

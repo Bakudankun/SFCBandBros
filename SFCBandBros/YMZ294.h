@@ -8,22 +8,16 @@
 #define _YMZ294_H_
 
 #include "Arduino.h"
+#include "BBsettings.h"
 
-/* 設定可能項目 */
-#ifndef YMZ294_PORT
-#define YMZ294_PORT D // ArduinoからYMZ294にデータを送るポート
-#endif
 #ifndef PITCH_RANGE
 #define PITCH_RANGE 2 // ピッチベンドのレンジ
 #endif
 
 class YMZ294{
 	public:
-		YMZ294(byte wr, byte a0, byte rst); 
+		YMZ294(); 
 		// コンストラクタ
-		// wr:WRに使用するピン番号
-		// a0:A0に使用するピン番号
-		// rst:RSTに使用するピン番号
 
 		void reset();
 		// RSTを0にしてYMZ294をリセットする。
