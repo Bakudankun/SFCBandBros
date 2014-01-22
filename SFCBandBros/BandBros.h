@@ -58,6 +58,9 @@ class BandBros{
 #if YMZ294_EXIST
 		YMZ294 m_ymz294; // 音源ICのYMZ294
 #endif
+#if ADXL362_EXIST
+		ADXL362 m_adxl362; // 加速度センサーのADXL362
+#endif
 		
 };
 

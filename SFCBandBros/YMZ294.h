@@ -1,6 +1,6 @@
 /* 
  * ArduinoでYMZ294.hをモノフォニックシンセサイザにしてMIDIっぽい命令で制御するクラス。
- * シフトレジスタを用いないので、使うにはArduinoのポートを丸々一つと、制御用に2つの計10ピン消費する。
+ * シフトレジスタを用いないので、使うにはArduinoのポートを丸々一つと、制御用に2～3の計10～11ピン消費する。
  * noteOn/Offとピッチベンド調整、音量調節などができる。
  */
 
@@ -20,7 +20,7 @@ class YMZ294{
 		// コンストラクタ
 
 		void reset();
-		// RSTを0にしてYMZ294をリセットする。
+		// YMZ294をリセットする。
 
 		void noteOn(char note);
 		// MIDIノート番号noteの音を発音する。
@@ -78,7 +78,9 @@ class YMZ294{
 
 		byte m_wr; // WRに使用するピン番号
 		byte m_a0; // A0に使用するピン番号
+#ifdef YMZ294_RST
 		byte m_rst; // rstに使用するピン番号
+#endif
 		char m_playing; // 今MIDIノート番号でどの音を鳴らしているか。鳴らしていない場合は-1。
 		int m_pitch; // ピッチベンドの値。-8192～8191の間。
 		byte m_tone; // 音色

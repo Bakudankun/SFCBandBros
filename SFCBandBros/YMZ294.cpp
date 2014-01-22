@@ -16,19 +16,24 @@
 #define NOTE_A4  440
 
 YMZ294::YMZ294()
-	: m_wr(YMZ294_WR), m_a0(YMZ294_A0), m_rst(YMZ294_RST)
+	: m_wr(YMZ294_WR), m_a0(YMZ294_A0)
 {
-	pinMode(m_wr, OUTPUT);
-	pinMode(m_a0, OUTPUT);
+#ifdef YMZ294_RST
+	m_rst = YMZ294_RST;
 	pinMode(m_rst, OUTPUT);
 	digitalWrite(m_rst, LOW);
+#endif
+	pinMode(m_wr, OUTPUT);
+	pinMode(m_a0, OUTPUT);
 	digitalWrite(m_wr, HIGH);
 	digitalWrite(m_a0, LOW);
 	DDRP = B11111111;
 	PORTP = B00000000;
+#ifdef YMZ294_RST
 	delay(100);
 	digitalWrite(m_rst, HIGH);
 	delay(200);
+#endif
 
 	noteOff();
 	setPitch(0);
@@ -37,14 +42,18 @@ YMZ294::YMZ294()
 }
 
 void YMZ294::reset(){
+#ifdef YMZ294_RST
 	digitalWrite(m_rst, LOW);
+#endif
 	digitalWrite(m_wr, HIGH);
 	digitalWrite(m_a0, LOW);
 	DDRP = B11111111;
 	PORTP = B00000000;
+#ifdef YMZ294_RST
 	delay(100);
 	digitalWrite(m_rst, HIGH);
 	delay(200);
+#endif
 
 	noteOff();
 	setPitch(0);
