@@ -14,9 +14,10 @@
 
 #define NOTE_A4  440
 
-YMZ294::YMZ294()
-	: m_wr(YMZ294_WR), m_a0(YMZ294_A0), m_rst(YMZ294_RST)
-{
+YMZ294::YMZ294() {
+	m_wr = YMZ294_WR;
+	m_a0 = YMZ294_A0;
+	m_rst = YMZ294_RST;
 	pinMode(m_wr, OUTPUT);
 	pinMode(m_a0, OUTPUT);
 	pinMode(m_rst, OUTPUT);

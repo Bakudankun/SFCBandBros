@@ -1,8 +1,10 @@
 #include "BBsettings.h"
 #include "BandBros.h"
 #include <SNESpad.h>
+#include "Buzzer.h"
+#include "YMZ294.h"
 
-BandBros game;
+BandBros *game = new BandBros;
 
 void setup(){ // 起動時に一度だけ呼ばれる初期化関数
 	// Serial.begin(57600);
@@ -10,7 +12,7 @@ void setup(){ // 起動時に一度だけ呼ばれる初期化関数
 
 void loop(){ // 起動後ループしつづける関数
 	int input = 0;
-	for(byte i = 0; i < 20; i++) input |= game.getInput(); // 確認のため20回回す
+	for(byte i = 0; i < 20; i++) input |= game->getInput(); // 確認のため20回回す
 	// if(input & SNES_A) Serial.print("A ");
 	// if(input & SNES_B) Serial.print("B ");
 	// if(input & SNES_X) Serial.print("X ");
@@ -25,5 +27,5 @@ void loop(){ // 起動後ループしつづける関数
 	// if(input & SNES_SELECT) Serial.print("Se ");
 	// Serial.println();
 
-	game.decode(input);
+	game->decode(input);
 }

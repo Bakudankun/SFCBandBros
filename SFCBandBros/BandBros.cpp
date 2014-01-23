@@ -3,15 +3,18 @@
 #define LRCOUNTER 15
 
 BandBros::BandBros()
-	: key(72), offset(0), playing(-1), playButton(0), prevButtons(0), noteCounter(0), m_pad(NULL), m_buzzer(NULL), m_ymz294(NULL)
 {
+	key = 72;
+	offset = 0;
+	playing = -1;
+	playButton = 0;
+	prevButtons = 0;
+	noteCounter = 0;
+	m_buzzer = NULL;
+	m_ymz294 = NULL;
 	m_pad = new SNESpad(SNESPAD_SP, SNESPAD_CLK, SNESPAD_DAT);
-#if BUZZER_EXIST
-	m_buzzer = new Buzzer;
-#endif
-// #ifdef YMZ294_EXIST
+	// m_buzzer = new Buzzer;
 	m_ymz294 = new YMZ294;
-// #endif
 }
 
 void BandBros::reset(){
