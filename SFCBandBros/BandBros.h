@@ -1,6 +1,6 @@
 /* 
  * バンブラやる用のインターフェース。
- * ボタンからの入力をMIDIっぽい命令にしてBuzzerに渡す。
+ * ボタンからの入力をMIDIっぽい命令にして出力に渡す。
  * また、特殊コマンドの入力でステータスを変更する。
  */
 
@@ -10,12 +10,8 @@
 #include "Arduino.h"
 #include "BBsettings.h"
 #include <SNESpad.h>
-#if BUZZER_EXIST
 #include "Buzzer.h"
-#endif
-#if YMZ294_EXIST
 #include "YMZ294.h"
-#endif
 
 class BandBros{
 	public:
@@ -51,13 +47,9 @@ class BandBros{
 		int playButton; // どのボタンが音を鳴らしているか。SNESpadに従うビットのうち１つが1になる。
 		int prevButtons; // ボタン入力を最後に記録して変化を抽出するのに使う
 		byte noteCounter; // LRの挙動に使うカウンター。0以外の時は既に鳴っている音に対してLRが利く。
-		SNESpad m_pad; // コントローラー入力
-#if BUZZER_EXIST
-		Buzzer m_buzzer; // ブザー出力
-#endif
-#if YMZ294_EXIST
-		YMZ294 m_ymz294; // 音源ICのYMZ294
-#endif
+		SNESpad *m_pad; // コントローラー入力
+		Buzzer *m_buzzer; // ブザー出力
+		YMZ294 *m_ymz294; // 音源ICのYMZ294
 		
 };
 

@@ -1,4 +1,3 @@
-#include "Arduino.h"
 #include "YMZ294.h"
 
 #define YMZ294_CONCAT(a, b) a ## b

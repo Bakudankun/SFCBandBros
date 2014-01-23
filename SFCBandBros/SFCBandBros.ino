@@ -1,7 +1,8 @@
+#include "BBsettings.h"
 #include "BandBros.h"
-// #include <SNESpad.h>
+#include <SNESpad.h>
 
-BandBros game();
+BandBros game;
 
 void setup(){ // 起動時に一度だけ呼ばれる初期化関数
 	// Serial.begin(57600);

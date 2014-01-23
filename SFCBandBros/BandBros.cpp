@@ -3,15 +3,20 @@
 #define LRCOUNTER 15
 
 BandBros::BandBros()
-	: key(72), offset(0), playing(-1), playButton(0), prevButtons(0), noteCounter(0)
+	: key(72), offset(0), playing(-1), playButton(0), prevButtons(0), noteCounter(0), m_pad(NULL), m_buzzer(NULL), m_ymz294(NULL)
 {
+	m_pad = new SNESpad(SNESPAD_SP, SNESPAD_CLK, SNESPAD_DAT);
+#if BUZZER_EXIST
+	m_buzzer = new Buzzer;
+#endif
+// #ifdef YMZ294_EXIST
+	m_ymz294 = new YMZ294;
+// #endif
 }
 
 void BandBros::reset(){
 	noteOff();
-#if YMZ294_EXIST
-	m_ymz294.reset();
-#endif
+	if(m_ymz294) m_ymz294->reset();
 	key = 72;
 	offset = 0;
 	playing = -1;
@@ -22,7 +27,7 @@ void BandBros::reset(){
 }
 
 int BandBros::getInput(){
-	return m_pad.buttons();
+	return m_pad->buttons();
 }
 
 void BandBros::decode(int buttons){
@@ -54,24 +59,16 @@ void BandBros::decode(int buttons){
 	} else if(buttons & SNES_SELECT){
 		ctrl = buttons & ~prevButtons;
 		if(ctrl & SNES_LEFT){
-#if YMZ294_EXIST
-			m_ymz294.prevTone();
-#endif
+			if(m_ymz294) m_ymz294->prevTone();
 		}
 		if(ctrl & SNES_RIGHT){
-#if YMZ294_EXIST
-			m_ymz294.nextTone();
-#endif
+			if(m_ymz294) m_ymz294->nextTone();
 		}
 		if(ctrl & SNES_UP){
-#if YMZ294_EXIST
-			m_ymz294.gainVolume();
-#endif
+			if(m_ymz294) m_ymz294->gainVolume();
 		}
 		if(ctrl & SNES_DOWN){
-#if YMZ294_EXIST
-			m_ymz294.loseVolume();
-#endif
+			if(m_ymz294) m_ymz294->loseVolume();
 		}
 	} else if(ctrl = (buttons & ~prevButtons) & (SNES_A | SNES_B | SNES_X | SNES_Y | SNES_UP | SNES_DOWN | SNES_LEFT | SNES_RIGHT)){
 		for(int i = 0; i < 12; i++){
@@ -187,24 +184,16 @@ char BandBros::btok(int button){
 void BandBros::noteOn(char key){
 	key = constrain(key, 0, 127);
 	if(playing >= 0) noteOff();
-#if BUZZER_EXIST
-	m_buzzer.noteOn(key);
-#endif
-#if YMZ294_EXIST
-	m_ymz294.noteOn(key);
-#endif
+	if(m_buzzer) m_buzzer->noteOn(key);
+	if(m_ymz294) m_ymz294->noteOn(key);
 	playing = key;
 	return;
 }
 
 void BandBros::noteOff(){
 	if(playing < 0) return;
-#if BUZZER_EXIST
-	m_buzzer.noteOff();
-#endif
-#if YMZ294_EXIST
-	m_ymz294.noteOff();
-#endif
+	if(m_buzzer) m_buzzer->noteOff();
+	if(m_ymz294) m_ymz294->noteOff();
 	playing = -1;
 	return;
 }
