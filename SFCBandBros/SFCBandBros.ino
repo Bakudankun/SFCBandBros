@@ -1,11 +1,12 @@
-#define SNESPAD_SP 8 // コントローラのS/Pピン
-#define SNESPAD_CLK 9 // コントローラのCLKピン
-#define SNESPAD_DAT 10 // コントローラのDATピン
+#define SNESPAD_CLK 10 // コントローラのCLKピン
+#define SNESPAD_SP 11 // コントローラのS/Pピン
+#define SNESPAD_DAT 12 // コントローラのDATピン
 #define YMZ294_PORT D // ArduinoからYMZ294にデータを送るポート
-#define YMZ294_WR 11 // YMZ294のWRピン
-#define YMZ294_A0 12 // YMZ294のA0ピン
-#define YMZ294_RST 13 // YMZ294のRSTピン
+#define YMZ294_WR 8 // YMZ294のWRピン
+#define YMZ294_A0 9 // YMZ294のA0ピン
+// #define YMZ294_RST 13 // YMZ294のRSTピン
 #define BUZZER 8 // ブザーに繋ぐピン
+#define AMP_CE 13 // アンプのCEピン
 
 #include <SNESpad.h>
 #include "BandBros.h"
@@ -18,9 +19,11 @@ YMZ294 *ymz294 = NULL;
 BandBros *game;
 
 void setup(){ // 起動時に一度だけ呼ばれる初期化関数
+	pinMode(AMP_CE, OUTPUT);
+	digitalWrite(AMP_CE, LOW);
 	pad = new SNESpad(SNESPAD_SP,SNESPAD_CLK,SNESPAD_DAT);
 	// buzzer = new Buzzer(BUZZER);
-	ymz294 = new YMZ294(YMZ294_WR, YMZ294_A0, YMZ294_RST);
+	ymz294 = new YMZ294(YMZ294_WR, YMZ294_A0, 0);
 	game = new BandBros(buzzer, ymz294);
 	// Serial.begin(57600);
 }

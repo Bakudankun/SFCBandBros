@@ -21,30 +21,38 @@ YMZ294::YMZ294(byte wr, byte a0, byte rst){
 	m_rst = rst;
 	pinMode(m_wr, OUTPUT);
 	pinMode(m_a0, OUTPUT);
+#ifdef YMZ294_RST
 	pinMode(m_rst, OUTPUT);
 	digitalWrite(m_rst, LOW);
+#endif
 	digitalWrite(m_wr, HIGH);
 	digitalWrite(m_a0, LOW);
 	DDRP = B11111111;
 	PORTP = B00000000;
 	delay(100);
+#ifdef YMZ294_RST
 	digitalWrite(m_rst, HIGH);
 	delay(200);
-
+#endif
 	noteOff();
 	setPitch(0);
 	setTone(YMZ294_MODE_NORMAL);
 	setVolume(10);
+
 }
 
 void YMZ294::reset(){
+#ifdef YMZ294_RST
 	digitalWrite(m_rst, LOW);
+#endif
 	digitalWrite(m_wr, HIGH);
 	digitalWrite(m_a0, LOW);
 	DDRP = B11111111;
 	PORTP = B00000000;
 	delay(100);
+#ifdef YMZ294_RST
 	digitalWrite(m_rst, HIGH);
+#endif
 	delay(200);
 
 	noteOff();
@@ -166,8 +174,6 @@ unsigned int YMZ294::ftotp(float freq){
 }
 
 void YMZ294::setTone(char tone){
-	// 音色を設定する。
-	// tone:設定する音色。今はYMZ294_NORMALのみ。
 	m_tone = constrain(tone, 0, YMZ294_MODE_NUMBER - 1);
 	return;
 }
